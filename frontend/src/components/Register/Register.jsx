@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Backdrop,
@@ -13,31 +13,11 @@ import CustomInput from "../CustomInput";
 import { Link, useNavigate } from "react-router-dom";
 import { ROUTES } from "../../constants";
 import { AuthContext } from "../../context/authContext";
-import gql from "graphql-tag";
 import { useMutation } from "@apollo/client";
-
-const REGISTER_USER_MUTATION = gql`
-  mutation Mutation($registerInput: RegisterInput) {
-    registerUser(registerInput: $registerInput) {
-      token
-      user {
-        id
-        username
-        email
-        todos {
-          id
-          title
-          description
-          isCompleted
-          ownerId
-        }
-      }
-    }
-  }
-`;
+import { REGISTER_USER_MUTATION } from "../../graphql/mutations";
 
 const Register = () => {
-  const context = useContext(AuthContext);
+  const { login, user } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const [registerUser, { loading }] = useMutation(REGISTER_USER_MUTATION);
@@ -50,6 +30,12 @@ const Register = () => {
   const { errors } = formState;
   const COMMON_PROPS = { control: control, errors: errors };
 
+  useEffect(() => {
+    if (user?.userId) {
+      navigate(ROUTES.DASHBOARD);
+    }
+  }, [navigate, user?.userId]);
+
   const onSubmitHandler = async (formValues) => {
     const { data } = await registerUser({
       variables: {
@@ -57,7 +43,7 @@ const Register = () => {
       },
     });
     if (data?.registerUser?.token) {
-      context.login(data?.registerUser);
+      login(data?.registerUser);
       navigate(ROUTES.DASHBOARD);
     }
   };

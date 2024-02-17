@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Backdrop,
@@ -12,31 +12,12 @@ import { emailRegex, textInputRegex } from "../../utils";
 import CustomInput from "../CustomInput";
 import { Link, useNavigate } from "react-router-dom";
 import { ROUTES } from "../../constants";
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { AuthContext } from "../../context/authContext";
-
-const LOGIN_MUTATION = gql`
-  mutation Mutation($loginInput: LoginInput) {
-    loginUser(loginInput: $loginInput) {
-      token
-      user {
-        id
-        username
-        email
-        todos {
-          id
-          title
-          description
-          isCompleted
-          ownerId
-        }
-      }
-    }
-  }
-`;
+import { LOGIN_MUTATION } from "../../graphql/mutations";
 
 const Login = () => {
-  const context = useContext(AuthContext);
+  const { user, login } = useContext(AuthContext);
   const navigate = useNavigate();
   const { control, formState, handleSubmit } = useForm({
     defaultValues: { ...InitialLoginFormValues },
@@ -45,6 +26,12 @@ const Login = () => {
 
   const { errors } = formState;
   const COMMON_PROPS = { control: control, errors: errors };
+
+  useEffect(() => {
+    if (user?.userId) {
+      navigate(ROUTES.DASHBOARD);
+    }
+  }, [navigate, user?.userId]);
 
   const [registerUser, { loading }] = useMutation(LOGIN_MUTATION);
 
@@ -55,7 +42,7 @@ const Login = () => {
       },
     });
     if (data?.loginUser?.token) {
-      context.login(data?.loginUser);
+      login(data?.loginUser);
       navigate(ROUTES.DASHBOARD);
     }
   };

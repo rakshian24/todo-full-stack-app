@@ -1,16 +1,24 @@
-import React, { useContext } from "react";
+import React from "react";
 
 import { Stack, Typography } from "@mui/material";
-import { AuthContext } from "../../context/authContext";
+import { useQuery } from "@apollo/client";
+import { GET_ME } from "../../graphql/queries";
 
 const Dashboard = () => {
-  const {
-    user: { user },
-  } = useContext(AuthContext);
+  const { data, loading, error } = useQuery(GET_ME);
+
+  if (loading) {
+    return <p>Loading....</p>;
+  }
+
+  if (error) {
+    console.log("ERROR = ", error);
+  }
+
   return (
     <Stack>
       <Typography fontSize={16} fontWeight={500}>
-        Hi! {user?.username}
+        Hi! {data?.me?.username}
       </Typography>
     </Stack>
   );

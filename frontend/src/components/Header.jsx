@@ -29,7 +29,7 @@ const Header = () => {
           Todo App
         </Typography>
       </Link>
-      {user?.token && <Button onClick={onLogOut}>Logout</Button>}
+      {user?.userId && <Button onClick={onLogOut}>Logout</Button>}
     </Stack>
   );
 };

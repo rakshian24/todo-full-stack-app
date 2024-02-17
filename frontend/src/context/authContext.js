@@ -48,7 +48,9 @@ function AuthProvider(props) {
     localStorage.setItem(APP_TOKEN_KEY, userData.token);
     dispatch({
       type: "LOGIN",
-      payload: userData,
+      payload: {
+        userId: userData.user.id,
+      },
     });
   };
 
