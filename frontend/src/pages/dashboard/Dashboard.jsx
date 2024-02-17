@@ -10,7 +10,7 @@ const Dashboard = () => {
   return (
     <Stack>
       <Typography fontSize={16} fontWeight={500}>
-        Hi! {user.username}
+        Hi! {user?.username}
       </Typography>
     </Stack>
   );
