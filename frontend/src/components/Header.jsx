@@ -3,6 +3,7 @@ import { Button, Stack, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
 import { ROUTES } from "../constants";
+import client from "../apolloClient";
 
 const Header = () => {
   const { user, logOut } = useContext(AuthContext);
@@ -10,6 +11,7 @@ const Header = () => {
 
   const onLogOut = () => {
     logOut();
+    client.clearStore();
     navigate(ROUTES.LOGIN);
   };
   return (
