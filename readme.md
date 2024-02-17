@@ -4,7 +4,7 @@
 
 Authentication is provided using JWT
 
-### Project is hosted live [here](https://raksh-todo-app.vercel.app/)
+### Project is hosted live [here](https://raksh-todo-full-stack-app.vercel.app/)
 
 ### References
 
